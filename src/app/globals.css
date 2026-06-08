@@ -1,26 +1,203 @@
 @import "tailwindcss";
 
+/**
+ * Web3 / modern product chrome (deep space, glass, violet–pink energy).
+ * Map stays the hero; UI floats as luminous glass above it.
+ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --page: #07060c;
+  --page-mid: #120f1c;
+  --ink: #f4f4f5;
+  --muted: #a1a1aa;
+  --brand: #8b5cf6;
+  --brand-hover: #a78bfa;
+  --line: rgba(255, 255, 255, 0.1);
+  --surface: rgba(12, 10, 22, 0.82);
+  --surface-muted: #181622;
+  --background: var(--page);
+  --foreground: var(--ink);
+  --accent: var(--brand);
+  --accent-hover: var(--brand-hover);
+  --accent-muted: rgba(139, 92, 246, 0.18);
+  --accent-ring: rgba(248, 187, 208, 0.75);
+  --accent-ring-soft: rgba(139, 92, 246, 0.28);
+  --shadow-elevated: 0 0 0 1px rgba(139, 92, 246, 0.2),
+    0 24px 48px -12px rgba(0, 0, 0, 0.55);
+  --shadow-float: 0 0 0 1px rgba(255, 255, 255, 0.08),
+    0 18px 40px -10px rgba(0, 0, 0, 0.45);
+  --shadow-modal: 0 0 0 1px rgba(167, 139, 250, 0.22),
+    0 28px 56px -12px rgba(0, 0, 0, 0.6);
+  --radius-card: 1.25rem;
+  --radius-field: 0.625rem;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-background: var(--page);
+  --color-foreground: var(--ink);
+  --color-brand: var(--brand);
+  --color-brand-hover: var(--brand-hover);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --font-sans: var(--font-app-sans), ui-sans-serif, system-ui, sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html,
+body {
+  height: 100%;
 }
 
 body {
-  background: var(--background);
+  background: radial-gradient(
+      120% 90% at 50% -15%,
+      rgba(88, 28, 135, 0.35) 0%,
+      transparent 55%
+    ),
+    radial-gradient(
+      80% 60% at 100% 0%,
+      rgba(236, 72, 153, 0.14) 0%,
+      transparent 50%
+    ),
+    var(--page);
+  background-attachment: fixed;
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+  letter-spacing: -0.02em;
+}
+
+/* Floating glass panels — near-opaque base so light map / photos never wash out text */
+.chrome-panel {
+  border-radius: 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background-color: rgba(7, 6, 13, 0.94);
+  background-image: linear-gradient(
+    165deg,
+    rgba(34, 28, 52, 0.72) 0%,
+    rgba(12, 10, 22, 0.88) 52%,
+    rgba(8, 7, 14, 0.95) 100%
+  );
+  backdrop-filter: blur(28px) saturate(1.12);
+  -webkit-backdrop-filter: blur(28px) saturate(1.12);
+  box-shadow: var(--shadow-float);
+}
+
+/* Light floating panels — header rail & saved list over light basemap */
+.chrome-panel-light {
+  border-radius: 1.5rem;
+  border: 1px solid rgba(228, 228, 231, 0.98);
+  background-color: rgba(255, 255, 255, 0.96);
+  background-image: linear-gradient(
+    165deg,
+    rgba(250, 250, 252, 0.96) 0%,
+    rgba(255, 255, 255, 0.98) 52%,
+    rgba(248, 250, 252, 0.96) 100%
+  );
+  backdrop-filter: blur(20px) saturate(1.05);
+  -webkit-backdrop-filter: blur(20px) saturate(1.05);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.04),
+    0 18px 40px -12px rgba(0, 0, 0, 0.1);
+}
+
+.chrome-panel--modal {
+  border-radius: 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background-color: rgba(6, 5, 12, 0.97);
+  background-image: linear-gradient(
+    175deg,
+    rgba(38, 32, 58, 0.65) 0%,
+    rgba(14, 12, 24, 0.92) 48%,
+    rgba(7, 6, 13, 0.98) 100%
+  );
+  backdrop-filter: blur(32px) saturate(1.12);
+  -webkit-backdrop-filter: blur(32px) saturate(1.12);
+  box-shadow: var(--shadow-modal);
+}
+
+/* Primary actions — solid soft pink (no gradient) */
+.btn-gradient {
+  background: #fce4ec;
+  color: #3f3f46;
+  border: 1px solid #f8bbd0;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  transition: background-color 0.2s ease, border-color 0.2s ease,
+    box-shadow 0.2s ease, transform 0.15s ease;
+}
+
+.btn-gradient:hover {
+  background: #f8bbd0;
+  border-color: #f48fb1;
+  box-shadow: 0 2px 8px rgba(244, 143, 177, 0.25);
+}
+
+.btn-gradient:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* MapLibre: map surface + pick mode (custom zoom UI lives in MapControls) */
+.travel-map .maplibregl-map {
+  font-family: inherit;
+  /* Light basemap (Positron) — match tile canvas before style loads */
+  background: #f2f2f2;
+}
+
+.pick-mode .maplibregl-canvas {
+  cursor: crosshair !important;
+}
+
+.travel-map .maplibregl-ctrl-bottom-right .maplibregl-ctrl {
+  margin-bottom: 5.5rem;
+  margin-right: 0.75rem;
+}
+
+@media (min-width: 768px) {
+  .travel-map .maplibregl-ctrl-bottom-right .maplibregl-ctrl {
+    margin-bottom: 1.25rem;
+    margin-right: 1.25rem;
+  }
+}
+
+/* Clustered point selection ring — driven via feature-state in MapLibre layers */
+@keyframes markerPulseSelected {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 4px var(--accent-ring-soft));
+  }
+  50% {
+    filter: drop-shadow(0 0 10px rgba(248, 187, 208, 0.65));
+  }
+}
+
+.shadow-elevated {
+  box-shadow: var(--shadow-elevated);
+}
+
+.shadow-float {
+  box-shadow: var(--shadow-float);
+}
+
+.shadow-modal {
+  box-shadow: var(--shadow-modal);
+}
+
+.skeleton-shimmer {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(
+    110deg,
+    #181622 0%,
+    #252036 45%,
+    #181622 80%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.25s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 120% 0;
+  }
+  100% {
+    background-position: -120% 0;
+  }
 }

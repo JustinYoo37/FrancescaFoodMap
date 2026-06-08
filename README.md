@@ -1,36 +1,57 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# My Travel Map
 
-## Getting Started
+Interactive, map-first travel portfolio built with Next.js (App Router), Tailwind CSS v4, Leaflet, marker clustering, and Framer Motion. **Your places are stored in the browser** (`localStorage` under `my-travel-map-places-v1`) so you can add and remove spots in the UI with no API keys. `src/data/places.json` ships empty and is optional seed data only.
 
-First, run the development server:
+## Prerequisites
+
+- Node.js 20+ (matches Next.js 16 expectations)
+- npm (ships with Node)
+
+## Setup
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000). The map bundle loads on the client only (Leaflet + clustering); you will see a short shimmer skeleton until tiles and markers are ready.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Adding and editing picks
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Use **Add place** in the header. Enter an address and use **Find**, or use **Drop pin on map** and click the map. Optional photos can be uploaded from your device, and a map link is built automatically from the saved location.
 
-## Learn More
+Open any pin to see details; **Remove from map** deletes it from your saved list.
 
-To learn more about Next.js, take a look at the following resources:
+Each place has this shape (IDs are assigned automatically when you save):
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- `id`, `name`, `city`, `country`, `category` (`Food` | `Activities` | `Nightlife` | `Nature`)
+- `lat`, `lng` (decimal degrees)
+- `rating` (0–10)
+- `description`
+- `images` (URLs; extend `next.config.ts` `images.remotePatterns` if you use a new host)
+- `mapLink` (map URL)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Data persists per browser profile. Clearing site data removes your list.
 
-## Deploy on Vercel
+## Production build
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+npm run build
+npm start
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Deploy to Vercel
+
+1. Push this repository to GitHub (or GitLab / Bitbucket).
+2. In the [Vercel dashboard](https://vercel.com/new), import the repository.
+3. Vercel auto-detects Next.js: keep the default **Build Command** (`next build`) and **Output** settings.
+4. Deploy. No environment variables are required for the static JSON setup.
+
+Official reference: [Vercel — Deploying a Next.js app](https://vercel.com/docs/frameworks/nextjs).
+
+## Project structure (high level)
+
+- `src/app` — App Router entry, global styles, metadata
+- `src/components/travel` — Map shell, filters, list, detail sheet, carousel
+- `src/data/places.json` — empty seed (optional); runtime list lives in `localStorage`
+- `src/lib` — types, category tokens, filtering helpers
